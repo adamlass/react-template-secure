@@ -47,7 +47,6 @@ export default class GenericCreate extends Component {
                     <Row>
                         {/* <p>{JSON.stringify(this.state.obj)}</p> */}
                         <Col lg={6} md={6} xs={6}>
-                            <h1>Create</h1>
                             <form>
                                 {form}
                                 <br />

@@ -19,6 +19,7 @@ export default class Table extends Component {
     render() {
       return (
         <>
+        <h1>Table</h1>
           <GenericTable data={this.state.data} idName="id" facade={this.props.facade} update={this.update} remove edit />
         </>
       )
