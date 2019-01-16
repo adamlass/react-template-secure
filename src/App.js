@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { HashRouter as Router, Route, Switch, NavLink, Redirect, Link } from "react-router-dom"
-import { } from 'react-bootstrap'
+// import { } from 'react-bootstrap'
 import './index.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -11,20 +11,22 @@ import Home from './components/Home'
 import Useredit from './components/UserEdit'
 import Register from './components/Register'
 import Login from './components/Login'
-import GenericTable from "./utils/GenericTable"
+import Table from "./components/Table"
+import Create from './components/Create';
 
 class App extends Component {
   render() {
     return (
       <Router>
-        <div>
+        <>
           <Route path="/" render={role => <NavBar />} />
           <Switch>
             <Route exact path="/" component={Login} />
             <Route exact path="/register" component={Register} />
 
             {/* Private routes */}
-            <PrivateRoute exact path="/table" component={Table} />
+            <PrivateRoute exact path="/table" component={() => <Table facade={facade} />} />
+            <PrivateRoute exact path="/create" component={() => <Create facade={facade} />} />
             <PrivateRoute exact path="/home" component={Home} />
             <PrivateRoute exact path="/useredit" component={Useredit} />
 
@@ -33,29 +35,13 @@ class App extends Component {
             <Route path="/notloggedin" component={LoginAlert} />
             <Route component={NotFound} />
           </Switch>
-        </div>
+        </>
       </Router>
     );
   }
 }
 
-class Table extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { data: [] }
-  }
-  async componentDidMount() {
-    var data = await facade.getAll()
-    this.setState({ data })
-  }
-  render() {
-    return (
-      <>
-        <GenericTable data={this.state.data} idName="id" update={this.update} URI={facade.getURI()} remove edit />
-      </>
-    )
-  }
-}
+
 
 function NotFound() {
   return (

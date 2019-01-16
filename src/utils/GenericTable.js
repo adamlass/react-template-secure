@@ -17,18 +17,9 @@ export default class GenericTable extends React.Component {
     }
 
     handleRemove = async obj => {
-
         var id = obj[this.getId()]
-        var options = makeOptions("delete")
-        try {
-            const res = await fetch(this.props.URI + "/" + id, options)
-            console.log(res)
-            const json = await handleHttpErrors(res)
-            console.log("JSON: " + json)
-            this.props.update()
-        } catch (error) {
-            alert("Status: " + error.status + "\nFull Error: " + JSON.stringify(error.fullError))
-        }
+        await this.props.facade.delete(id)
+        this.props.update()
     }
 
     handleClose = () => {
@@ -48,19 +39,10 @@ export default class GenericTable extends React.Component {
     }
 
     handleSave = async () => {
-        var id = this.state.editObj[this.getId()]
-        var options = makeOptions("put", true, this.state.editObj)
-        console.log(this.props.URI)
-        try {
-            const res = await fetch(this.props.URI + "/" + id, options)
-            console.log(res)
-            const json = await handleHttpErrors(res)
-            console.log("JSON: " + json)
-            this.handleClose()
-            this.props.update()
-        } catch (error) {
-            alert("Status: " + error.status + "\nFull Error: " + JSON.stringify(error.fullError))
-        }
+        var facade = this.props.facade
+        await facade.update(this.state.editObj)
+        this.handleClose()
+        this.props.update()
     }
 
     getId = () => {
@@ -104,8 +86,8 @@ export default class GenericTable extends React.Component {
 
 
 
-                if (!this.props.URI || !this.props.update) {
-                    console.log("WARNING - Generic Table does not contain both 'URI' and 'update' function!!")
+                if (!this.props.update) {
+                    console.log("WARNING - Generic Table does not contain 'update' function!!")
                     edit = null
                     remove = null
                 }
@@ -119,7 +101,7 @@ export default class GenericTable extends React.Component {
                 var content = data.map((e, i) => (
                     <tr key={"id_" + i} >
                         {Object.values(e).map((val, j) => (
-                            <td onClick={edit ? () => this.handleEdit(e): null} key={"table_td_" + j}>{typeof val == "object" ? biggestSetOfKeys[j] + ": " + JSON.stringify(val) : val}</td>
+                            <td onClick={edit ? () => this.handleEdit(e) : null} key={"table_td_" + j}>{typeof val == "object" ? biggestSetOfKeys[j] + ": " + JSON.stringify(val) : val}</td>
                         ))}
 
                         {edit ? <td><Button bsStyle="warning" onClick={() => this.handleEdit(e)}>Edit</Button></td> : null}
@@ -152,40 +134,50 @@ export default class GenericTable extends React.Component {
 
         return (
             <>
+                <Grid>
 
-                <Col md={12} xs={12} lg={12}>
-                
-                    <Table hover striped>
-                        <thead>
-                            <tr>
-                                {thead ? thead : <td>No Data</td>}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {content}
-                        </tbody>
-                    </Table>
-                    
-                    
-                    <div>
-                        <Modal show={this.state.show} onHide={this.handleClose}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Edit Entry</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                {/* {JSON.stringify(this.state.editObj)} */}
-                                <form>
-                                    {form}
-                                </form>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button onClick={this.handleClose}>Close</Button>
-                                <Button bsStyle="success" style={{ float: "left" }} onClick={this.handleSave}>Save</Button>
-                            </Modal.Footer>
-                        </Modal>
-                    </div>
-                </Col>
+                    <Row>
 
+                        <Col md={12} xs={12} lg={12}>
+
+                            <Table hover striped>
+                                <thead>
+                                    <tr>
+                                        {thead ? thead : <td>No Data</td>}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {content}
+                                </tbody>
+                            </Table>
+
+                        </Col>
+                        <>
+                            {
+                                this.state.show ?
+                                    <div className="static-modal">
+                                        <Modal.Dialog onHide={this.handleClose}>
+                                            <Modal.Header>
+                                                <Modal.Title>Edit Entry</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+                                                {/* {JSON.stringify(this.state.editObj)} */}
+                                                <form>
+                                                    {form}
+                                                </form>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button onClick={this.handleClose}>Close</Button>
+                                                <Button bsStyle="success" style={{ float: "left" }} onClick={this.handleSave}>Save</Button>
+                                            </Modal.Footer>
+                                        </Modal.Dialog>
+                                    </div>
+                                    : null
+                            }
+
+                        </>
+                    </Row>
+                </Grid>
 
             </>
         )

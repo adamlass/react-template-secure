@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 
-import { Col, FormControl, Button } from "react-bootstrap"
-import { handleHttpErrors, makeOptions } from "../facade/FacadeUtils";
+import { Grid, Row, Col, FormControl, Button } from "react-bootstrap"
 import GenericTable from "./GenericTable";
 
 
@@ -20,19 +19,12 @@ export default class GenericCreate extends Component {
     }
 
     post = async () => {
-        var options = makeOptions("post", true, this.state.obj)
-        try {
-            const res = await fetch(this.props.URI, options)
-            console.log(res)
-            const json = await handleHttpErrors(res)
-            console.log("JSON: " + json)
-            var objectsCreated = Object.assign([], this.state.objectsCreated)
-            objectsCreated.push(json)
-            this.setState({ objectsCreated })
+        var json = await this.props.facade.save(this.state.obj)
 
-        } catch (error) {
-            alert("Status: " + error.status + "\nFull Error: " + JSON.stringify(error.fullError))
-        }
+        var objectsCreated = Object.assign([], this.state.objectsCreated)
+        objectsCreated.push(json)
+        this.setState({ objectsCreated })
+
     }
 
     render() {
@@ -51,24 +43,29 @@ export default class GenericCreate extends Component {
 
         return (
             <>
-                {/* <p>{JSON.stringify(this.state.obj)}</p> */}
-                <Col md={6} xs={12}>
-                    <h1>Create</h1>
-                    <form>
-                        {form}
-                        <br />
-                        <Button bsStyle="success" onClick={this.post} value="Save">Save</Button>
-                    </form>
-                </Col>
-                {
-                    this.state.objectsCreated.length > 0 ?
-                        <Col md={6} xs={12}>
-                            <h1>Created Objects</h1>
-                            <GenericTable data={this.state.objectsCreated} />
+                <Grid>
+                    <Row>
+                        {/* <p>{JSON.stringify(this.state.obj)}</p> */}
+                        <Col lg={6} md={6} xs={6}>
+                            <h1>Create</h1>
+                            <form>
+                                {form}
+                                <br />
+                                <Button bsStyle="success" onClick={this.post} value="Save">Save</Button>
+                            </form>
                         </Col>
-                        :
-                        null
-                }
+                        {
+                            this.state.objectsCreated.length > 0 ?
+                                <Col lg={6} md={6} xs={6}>
+                                    <h1>Created Objects</h1>
+                                    <GenericTable data={this.state.objectsCreated} />
+                                </Col>
+                                :
+                                null
+                        }
+                    </Row>
+                </Grid>
+
             </>
         )
     }

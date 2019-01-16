@@ -1,17 +1,19 @@
 import { handleHttpErrors, makeOptions, setToken, getToken } from "../utils/FacadeUtils";
 const URI = "http://localhost:8084"
+const URI_Data = "http://localhost:8084/Webapp-Template/api/pets"
 
 
 class ApiFacade {
 
   //Don't delete
   getURI = () => {
-    return URI
+    return URI_Data
   }
 
   getAll = async () => {
     try {
-      const res = await fetch(URI)
+      const options = makeOptions("GET", true)
+      const res = await fetch(this.getURI(), options)
       console.log(res)
       const json = await handleHttpErrors(res)
       return json
@@ -19,6 +21,41 @@ class ApiFacade {
       alert("Status: " + error.status + "\nFull Error: " + JSON.stringify(error.fullError))
     }
   }
+
+  delete = async (id) => {
+    var options = makeOptions("delete", true)
+    try {
+      const res = await fetch(this.getURI() + "/" + id, options)
+      const json = await handleHttpErrors(res)
+    } catch (error) {
+      alert("Status: " + error.status + "\nFull Error: " + JSON.stringify(error.fullError))
+    }
+  }
+
+  update = async (obj) => {
+    try {
+      var options = makeOptions("put", true, obj)
+      const res = await fetch(this.getURI() + "/" + obj.id, options)
+      const json = await handleHttpErrors(res)
+      return json
+    } catch (error) {
+      alert("Status: " + error.status + "\nFull Error: " + JSON.stringify(error.fullError))
+    }
+  }
+
+  save = async (obj) => {
+    try {
+      var options = makeOptions("post", true, obj)
+      const res = await fetch(this.getURI(), options)
+      const json = await handleHttpErrors(res)
+      return json
+    } catch (error) {
+      alert("Status: " + error.status + "\nFull Error: " + JSON.stringify(error.fullError))
+    }
+  }
+
+
+
 
   //Don't delete
 

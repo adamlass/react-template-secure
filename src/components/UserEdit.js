@@ -97,8 +97,8 @@ export default class Useredit extends Component {
        
       return (
         <div>
-          <NavBar role={roleNavBar} />
-          <h1> we are still isLoading</h1>
+          {/* <NavBar role={roleNavBar} /> */}
+          <h1>Loading...</h1>
           </div>
         );
       }

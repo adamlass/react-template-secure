@@ -36,7 +36,12 @@ export default function NavBar(props) {
             <>
               <li>
                 <NavLink exact to="/home">Home</NavLink>
+              </li>
+              <li>
                 <NavLink exact to="/table">Table</NavLink>
+              </li>
+              <li>
+                <NavLink exact to="/create">Create</NavLink>
               </li>
 
             </>
