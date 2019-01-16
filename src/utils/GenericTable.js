@@ -1,7 +1,7 @@
 import React from "react"
 
 import { Table, Button, Modal, FormControl, Grid, Row, Col } from "react-bootstrap"
-import { handleHttpErrors, makeOptions } from "../facade/FacadeUtils";
+import { handleHttpErrors, makeOptions } from "../utils/FacadeUtils";
 
 export default class GenericTable extends React.Component {
     constructor(props) {
